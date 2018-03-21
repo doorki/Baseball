@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <!-- 		인터페이스의 이름작성 -->
+  <mapper namespace="BaseballDao">				
+  	<resultMap type="BaseballVO" id="BaseballVOMap"> <!--vo에 저장 하는값 result type  -->
+  		<id column="ID" property="id"/>
+  		<!-- 결과를 다른 객체에 할당 -->
+  		<association property="memberVO" javaType="MemberVO">
+  			<id column="M_ID" property="id"/>
+  			
+  		</association>
+  	</resultMap>
+  	
+  	<select id="selectAll" resultMap="BaseballVOMap">
+  	
+  	SELECT 	B.ID
+  	
+  	FROM 	BASEBALL B
+  		 	,MEMBER	  M
+  	WHERE	B.USER_ID = M.ID
+  	</select> 
+  		
+  </mapper>
