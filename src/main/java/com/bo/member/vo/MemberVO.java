@@ -8,11 +8,20 @@ public class MemberVO {
 	private int id;
 	@NotEmpty(message = "Nickname은 필수입력 값 입니다.")
 	private String nickname;
-	@NotEmpty(message = "PassWord 필수입력 값 입니다.")
+	@NotEmpty(message = "PassWord는 필수입력 값 입니다.")
 	private String password;
+	@NotEmpty(message = "Email은 필수입력 값 입니다.")
 	private String email;
-	private String registerDate;
+	private String registDate;
+	private String salt;
 	
+	
+	public String getSalt() {
+		return salt;
+	}
+	public void setSalt(String salt) {
+		this.salt = salt;
+	}
 	public String getEmail() {
 		return email;
 	}
@@ -38,9 +47,9 @@ public class MemberVO {
 		this.password = password;
 	}
 	public String getRegisterDate() {
-		return registerDate;
+		return registDate;
 	}
-	public void setRegisterDate(String registerDate) {
-		this.registerDate = registerDate;
+	public void setRegisterDate(String registDate) {
+		this.registDate = registDate;
 	}
 }

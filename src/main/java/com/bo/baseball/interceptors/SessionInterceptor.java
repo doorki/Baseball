@@ -17,7 +17,6 @@ public class SessionInterceptor extends HandlerInterceptorAdapter {
 		String contextPath = request.getContextPath();
 
 		if (request.getSession().getAttribute(Member.USER) == null) {
-
 			
 			response.sendRedirect(contextPath + "/login"); // 멤버 유저가 null이면 로그인 하고와!
 			return false;

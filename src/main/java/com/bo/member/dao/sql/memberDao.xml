@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
@@ -10,19 +10,47 @@
  				ID
  				,EMAIL
  				,PASSWORD
+ 				,NICKNAME
+ 				,REGIST_DATE
+ 				,SALT
  			)
  			VALUES (
  				MEMBER_ID_SEQ.NEXTVAL
  				,#{email}
  				,#{password}
+ 				,#{nickname}
+ 				,SYSDATE
+ 				,#{salt}
  			)
  		</insert>
+ 		
  		<select id="selectMember" parameterType="MemberVO" resultType="MemberVO">
- 			SELECT ID
+ 			SELECT 	ID
  					, EMAIL
- 			FROM		MEMBER
- 			WHERE EMAIL = #{email}
+ 					, NICKNAME
+ 					, REGIST_DATE registDate
+ 					, SALT
+			FROM	MEMBER
+ 			WHERE EMAIL =#{email}
  			AND PASSWORD =#{password}
+ 		</select>
+ 		
+ 		<select id="selectSalt" parameterType="string" resultType="string">
+ 			SELECT NVL(SALT, '')
+ 			FROM MEMBER
+ 			WHERE EMAIL = #{email}
+ 		</select>
+ 		
+ 		<select id="selectCountMemberNickname" parameterType="string" resultType="_int">
+ 			SELECT	COUNT(ID)
+ 			FROM	MEMBER
+ 			WHERE 	NICKNAME = #{nickname}
+ 		</select>
+ 		
+ 		<select id="selectCountMemberEmail" parameterType="string" resultType="_int" >
+ 			SELECT	COUNT(ID)
+ 			FROM	MEMBER
+ 			WHERE	EMAIL = #{email}
  		</select>
  		
  		<delete id ="deleteMember" parameterType="_int" >

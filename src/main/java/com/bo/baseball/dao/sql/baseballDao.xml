@@ -3,23 +3,170 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
   <!-- 		인터페이스의 이름작성 -->
-  <mapper namespace="BaseballDao">				
-  	<resultMap type="BaseballVO" id="BaseballVOMap"> <!--vo에 저장 하는값 result type  -->
+  <mapper namespace="BaseballDao">
+  
+  	<resultMap type="BaseballVO" id="BaseballVOMap">
   		<id column="ID" property="id"/>
+  		<result column="TITLE" property="title"/>
+  		<result column="BODY" property="body"/>
+  		<result column="TEAM" property="team"/>
+  		<result column="USER_ID" property="userId"/>
+  		<result column="WRITE_DATE" property="writeDate"/>
+  		<result column="VIEW_COUNT" property="viewCount"/>
+  		<result column="RECOMMEND_COUNT" property="recommendCount"/>
   		<!-- 결과를 다른 객체에 할당 -->
   		<association property="memberVO" javaType="MemberVO">
   			<id column="M_ID" property="id"/>
-  			
+  			<result column="EMAIL" property="email"/>
+  			<result column="NICKNAME" property="nickname"/>
+  			<result column="REGIST_DATE" property="registDate"/>
+  		</association>
+  		
+  		<association property="teamVO" javaType="TeamVO">
+  			<id column="T_ID" property="id"/>
+  			<result column="NAME" property="name"/>
+  			<result column="VICTORY" property="victory"/>
+  			<result column="HOME" property="home"/>
+  			<result column="BIRTH" property="birth"/>
+  			<result column="IMG" property="img"/>
   		</association>
   	</resultMap>
-  	
-  	<select id="selectAll" resultMap="BaseballVOMap">
-  	
-  	SELECT 	B.ID
-  	
-  	FROM 	BASEBALL B
-  		 	,MEMBER	  M
-  	WHERE	B.USER_ID = M.ID
-  	</select> 
   		
+		<select id ="selectCountAll" resultType="_int" parameterType="BaseballSearchVO">
+			SELECT	COUNT(B.ID)
+			  FROM 	BASEBALL B
+	  				,MEMBER M
+	  				,TEAM 	T
+	  		WHERE   B.USER_ID = M.ID(+)
+	  		AND		B.TEAM = T.NAME(+)
+	  		AND		WRITE_DATE <![CDATA[ <= ]]> SYSDATE
+	  		AND		WRITE_DATE >= ADD_MONTHS(SYSDATE, -1)
+ 		 <choose>
+				<when test="searchType == 1">
+			AND		B.TITLE LIKE '%' || #{searchKeyword} || '%'
+				</when>
+				<when test="searchType == 2">
+			AND		B.BODY LIKE '%' || #{searchKeyword} || '%'
+				</when>
+				<when test="searchType == 3">
+			AND		( B.TITLE LIKE '%' || #{searchKeyword} || '%'
+			OR		B.BODY LIKE '%' || #{searchKeyword} || '%' )
+				</when>
+				<when test="searchType == 4">
+			AND		M.NICKNAME LIKE '%' || #{searchKeyword} || '%'
+				</when>
+				<when test="searchType == 5">
+			AND		M.EMAIL LIKE '%' || #{searchKeyword} || '%'
+				</when>
+		</choose>
+  		</select>
+  				
+  		<select id="selectAll" resultMap="BaseballVOMap" parameterType="BaseballSearchVO">
+  		SELECT	*
+  		FROM		(
+			  		SELECT	ROWNUM RNUM
+			  				, B.*
+			  		FROM		(
+				  		SELECT	B.ID
+				  				,B.TITLE
+				  				,B.BODY
+				  				,B.USER_ID
+				  				,TO_CHAR(B.WRITE_DATE, 'YYYY-MM-DD HH24-MI-SS') WRITE_DATE
+				  				,B.VIEW_COUNT
+				  				,B.RECOMMEND_COUNT
+					                ,M.ID M_ID
+					                ,M.EMAIL
+					                ,M.NICKNAME
+					                ,M.REGIST_DATE
+					                ,T.IMG
+				  		FROM 	BASEBALL B
+				  				,MEMBER M
+				  				,TEAM	T
+				  		WHERE   B.USER_ID = M.ID(+) <!-- 데이터가 존재하지 않는 쪽에다가 붙임 조인!-->
+				  		AND		B.TEAM = T.NAME(+)
+	  						 <choose>
+								<when test="searchType == 1">
+							AND		B.TITLE LIKE '%' || #{searchKeyword} || '%'
+								</when>
+								<when test="searchType == 2">
+							AND		B.BODY LIKE '%' || #{searchKeyword} || '%'
+								</when>
+								<when test="searchType == 3">
+							AND		( B.TITLE LIKE '%' || #{searchKeyword} || '%'
+							OR		B.BODY LIKE '%' || #{searchKeyword} || '%' )
+								</when>
+								<when test="searchType == 4">
+							AND		M.NICKNAME LIKE '%' || #{searchKeyword} || '%'
+								</when>
+								<when test="searchType == 5">
+							AND		M.EMAIL LIKE '%' || #{searchKeyword} || '%'
+								</when>
+						</choose>	 
+						ORDER BY B.ID DESC
+							) B
+						WHERE	ROWNUM <![CDATA[<=]]> #{endNumber}
+					)
+				WHERE 	RNUM >= #{startNumber}	
+  		</select>
+  	
+  	<insert id="insertBaseball" parameterType="BaseballVO">
+  		INSERT INTO BASEBALL(
+  			ID
+  			,TITLE
+  			,BODY
+  			,USER_ID
+  			,WRITE_DATE
+  			,VIEW_COUNT
+  			,RECOMMEND_COUNT
+  			,TEAM
+  		)
+  		VALUES (
+		 BASEBALL_ID_SEQ.NEXTVAL
+		 ,#{title}
+		 ,#{body}
+		 ,#{userId}
+		 ,SYSDATE
+		 ,0
+		 ,0
+		 ,#{team}
+  		)
+  	</insert>
+  		<select id="selectOne" parameterType="_int" resultMap="BaseballVOMap">
+  			SELECT	B.ID
+	  				,B.TITLE
+	  				,B.BODY
+	  				,B.USER_ID
+	  				,B.WRITE_DATE
+	  				,B.VIEW_COUNT
+	  				,B.RECOMMEND_COUNT
+		                ,M.ID M_ID
+		                ,M.EMAIL
+		                ,M.NICKNAME
+		                ,M.REGIST_DATE
+		                ,T.IMG
+	  		FROM 	BASEBALL B
+	  				,MEMBER M
+	  				,TEAM	T
+	  		WHERE   B.USER_ID = M.ID(+)
+			AND		B.ID = #{id}
+			AND 	B.TEAM = T.NAME(+)	
+  	</select>
+  	
+  	<delete id ="deletePage" parameterType="_int" >
+  		DELETE
+		FROM 	BASEBALL
+  		WHERE  	ID = #{id}
+  	</delete>
+  	
+  	<update id="incrementViewCount" parameterType="_int">
+  		UPDATE	BASEBALL
+  		SET		VIEW_COUNT	=	VIEW_COUNT + 1
+  		WHERE	ID	=	#{id}
+  	</update>
+  	<update id="incrementRecommendCount" parameterType="_int">
+  		UPDATE	BASEBALL
+  		SET		RECOMMEND_COUNT	=	RECOMMEND_COUNT + 1
+  		WHERE	ID	=	#{id}
+  	</update>
+  	
   </mapper>

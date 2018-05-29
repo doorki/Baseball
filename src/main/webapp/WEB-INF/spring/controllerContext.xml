@@ -8,10 +8,17 @@
 		<property name="baseballService"  ref="baseballService"></property>
 	</bean>
 	
-	
 	<bean id="memberController"
 			class="com.bo.member.web.MemberController">
 			<property name="memberService"  ref="memberService"></property>
 	</bean>
-
+	
+	<bean id="statsController"
+			class="com.bo.stats.web.StatsController">
+			<property name="statsService" ref="statsService"></property>
+	</bean>	
+	<bean id="teamController"
+			class="com.bo.team.web.TeamController">
+			<property name="teamService" ref="teamService"></property>
+	</bean>
 </beans>

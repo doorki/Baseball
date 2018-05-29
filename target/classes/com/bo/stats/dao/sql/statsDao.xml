@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="StatsDao">
+   <resultMap type="StatsVO" id="StatsVOMap">
+ 	<id column="ID" property="id"/>
+ 	<result column="RANK" property="rank"/>
+ 	<result column="TEAM" property="team"/>
+ 	<result column="ROUND" property="round"/>
+ 	<result column="WIN" property="win"/>
+ 	<result column="LOSE" property="lose"/>
+ 	<result column="DRAW" property="draw"/>
+ 	<result column="WINAVG" property="winAvg"/>
+ 	<result column="GAMESBEHIND" property="gamesBehind"/>
+ 	<result column="STRAIGHT" property="straight"/>
+ 	<result column="ONBASE" property="onBase"/>
+ 	<result column="LONGHIT" property="longHit"/>
+ 	<result column="RECENTTENROUND" property="recentTenRound"/>
+	
+  </resultMap>	
+ 		<insert id="insertStats" parameterType="StatsVO">
+  		INSERT INTO STATS(
+  			ID
+  			,RANK
+  			,TEAM
+  			,ROUND
+  			,WIN
+  			,LOSE
+  			,DRAW
+  			,WINAVG
+  			,GAMESBEHIND
+  			,STRAIGHT
+  			,ONBASE
+  			,LONGHIT
+  			,RECENTTENROUND 
+  		)
+  		 VALUES (
+		 STATS_ID_SEQ.NEXTVAL
+		 ,#{rank}
+		 ,#{team}
+		 ,#{round}
+		 ,#{win}
+		 ,#{lose}
+		 ,#{draw}
+		 ,#{winAvg}
+		 ,#{gamesBehind}
+		 ,#{straight}
+		 ,#{onBase}
+		 ,#{longHit}
+		 ,#{recentTenRound}
+  		)
+ 	</insert>
+ 	<select id="selectAll" resultMap="StatsVOMap" parameterType="StatsVO">
+ 		SELECT	
+				S.ID
+	  			,S.RANK
+	  			,S.TEAM
+	  			,S.ROUND
+	  			,S.WIN
+	  			,S.LOSE
+	  			,S.DRAW
+	  			,S.WINAVG
+	  			,S.GAMESBEHIND
+	  			,S.STRAIGHT
+	  			,S.ONBASE
+	  			,S.LONGHIT
+	  			,S.RECENTTENROUND 
+  		FROM 	 STATS S
+  		ORDER BY S.RANK 
+ 	</select>
+ 	<delete id="deleteStats">
+ 		DELETE  
+ 		FROM STATS
+ 	</delete>
+ </mapper>

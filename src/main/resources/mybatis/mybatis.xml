@@ -6,10 +6,15 @@
  <configuration>
  	<typeAliases>
  		<typeAlias type="com.bo.baseball.vo.BaseballVO" alias="BaseballVO"/>
+ 			<typeAlias type="com.bo.baseball.vo.BaseballSearchVO" alias="BaseballSearchVO"/>
  		<typeAlias type="com.bo.member.vo.MemberVO" alias="MemberVO"/>
+ 		<typeAlias type="com.bo.stats.vo.StatsVO" alias="StatsVO"/>
+ 		<typeAlias type="com.bo.team.vo.TeamVO" alias="TeamVO"/>
  	</typeAliases>
  	<mappers>
  		<mapper resource="com/bo/baseball/dao/sql/baseballDao.xml"/>
  		<mapper resource="com/bo/member/dao/sql/memberDao.xml"/>
+ 		<mapper resource="com/bo/stats/dao/sql/statsDao.xml"/>
+ 		<mapper resource="com/bo/team/dao/sql/teamDao.xml"/>
  	</mappers>
  </configuration>

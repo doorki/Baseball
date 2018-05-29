@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+	<bean id="statsDaoOracle"
+	      class="com.bo.stats.dao.StatsDaoImplForOracle">
+	      <property name="sqlSessionTemplate" ref="sqlSessionTemplate"/>
+	</bean>
+ 
+ 	<bean id="statsService"
+			class="com.bo.stats.service.StatsServiceImpl">
+			<property name="statsDao" ref="statsDaoOracle"/>
+	</bean>
+</beans>

@@ -22,4 +22,22 @@ public class MemberDaoImplForOracle extends SqlSessionDaoSupport implements Memb
 		
 		return getSqlSession().delete("MemberDao.deleteMember", id);
 	}
+
+	@Override
+	public String selectSalt(String email) {
+		// TODO Auto-generated method stub
+		return getSqlSession().selectOne("MemberDao.selectSalt", email);
+	}
+
+	@Override
+	public int selectCountMemberNickname(String nickname) {
+		// TODO Auto-generated method stub
+		return getSqlSession().selectOne("MemberDao.selectCountMemberNickname", nickname);
+	}
+
+	@Override
+	public int selectCountMemberEmail(String email) {
+		// TODO Auto-generated method stub
+		return getSqlSession().selectOne("MemberDao.selectCountMemberEmail", email);
+	}
 }
